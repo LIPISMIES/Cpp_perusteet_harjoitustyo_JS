@@ -1,9 +1,17 @@
 ﻿  cpp_perusteet_harjoitustyo.cpp
-C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(261,77): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(321,87): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
           with
           [
               _Ty=int
           ]
-C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(186): warning C4715: 'asiakkaitaSaapuu': not all control paths return a value
-C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(209): warning C4715: 'huoneHalutaanVarata': not all control paths return a value
+C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(324,106): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\cpp_perusteet_harjoitustyo.cpp(324,80): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
   cpp_perusteet_harjoitustyo.vcxproj -> C:\Users\jaakk\source\repos\cpp_perusteet_repo_jaakko\harjoitustyo\cpp_perusteet_harjoitustyo\x64\Debug\cpp_perusteet_harjoitustyo.exe

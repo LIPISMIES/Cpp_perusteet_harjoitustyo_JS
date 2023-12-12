@@ -5,12 +5,15 @@ HARJOITUSTYÖ (HOTELLIHUONE)
 
 NIMI:               Jaakko Simonen
 LUOKKA:             23TIETOB
-SÄHKÖPOSTI:         Jaakko Simonen
+SÄHKÖPOSTI:         jaakko.simonen@tuni.fi
 OPISKELIJANUMERO:   2307580
 
 OHJELMAN KUVAUS:
 
-
+Tämä ohjelma sisältää toiminnallisuudet hotellihuoneiden varaukseen.
+Asiakas voi valita tai arpoa hotellihuoneen, syöttää yöpymispäivien määrän
+ja saada laskennallisen hinnan varatusta huoneesta.
+Ohjelman toimintaa jatketaan niin kauan kuin asiakkaita riittää.
 */
 
 #include <iostream>
@@ -20,8 +23,8 @@ OHJELMAN KUVAUS:
 
 const int HUONEITA_MIN = 40;  // Arvotun huonemäärän alaraja
 const int HUONEITA_MAX = 300; // Arvotun huonemäärän yläraja
-const int HOTELLIYON_HINTA_1HLO{ 100 }; // Hotelliyön hinta yhden hengen huoneissa
-const int HOTELLIYON_HINTA_2HLO{ 150 }; // Hotelliyön hinta kahden hengen huoneissa
+//const int HOTELLIYON_HINTA_1HLO{ 100 }; // Hotelliyön hinta yhden hengen huoneissa
+//const int HOTELLIYON_HINTA_2HLO{ 150 }; // Hotelliyön hinta kahden hengen huoneissa
 
 bool syotteenTarkistus(std::string syote, std::string sallitut_merkit, bool vain_yksi_merkki)
 {
@@ -109,9 +112,9 @@ std::string kysySyote(std::string kysymys, std::string sallitut_merkit, bool vai
 
 class Hotellihuone {
 public:
-    int huonenumero;
-    int huonekoko;
-    bool vapaa;
+    int huonenumero{ 0 };
+    int huonekoko{ 0 };
+    bool vapaa{ true };
 
     void varaa_huone() {
         vapaa = false;
@@ -120,11 +123,54 @@ public:
         std::string vastaus = kysySyote("Kuinka monta yötä haluatte nukkua hotellissa?: ", "0123456789", false);
         int nukutut_yot = std::stoi(vastaus);
 
+        // Huonekoon mukaisten hintojen määritys
+        int hinta_per_yo;
+        if (huonekoko == 1) {
+            hinta_per_yo = HOTELLIYON_HINTA_1HLO;
+        }
+        else if (huonekoko == 2) {
+            hinta_per_yo = HOTELLIYON_HINTA_2HLO;
+        }
+        else {
+            // Jos huonekoko ei ole 1 tai 2, käytetään oletushintaa
+            hinta_per_yo = HOTELLIYON_OLETUSHINTA;
+        }
+
         // Lasketaan ja ilmoitetaan hinta
-        int hinta = nukutut_yot * HOTELLIYON_HINTA_1HLO;
-        std::cout << "Hotellissa nukuttujen öiden hinta on " << hinta << " €.\n\n";
+        int hinta = nukutut_yot * hinta_per_yo;
+
+        // Alennuksen määritys
+        double alennus = arvoSatunnainenAlennus();
+        int alennettu_hinta = static_cast<int>(hinta * (1.0 - alennus));
+
+        std::cout << "Hotellissa nukuttujen öiden alkuperäinen hinta olisi ollut " << hinta << " €.\n";
+        std::cout << "Alennettu hinta on " << alennettu_hinta << " €.\n\n";
+    }
+
+private:
+    const int HOTELLIYON_HINTA_1HLO{ 100 };
+    const int HOTELLIYON_HINTA_2HLO{ 150 };
+    const int HOTELLIYON_OLETUSHINTA{ 120 };  // Oletushinta muille huoneille
+
+    double arvoSatunnainenAlennus() {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dis(0, 2);
+
+        int satunnaisluku = dis(gen);
+
+        if (satunnaisluku == 0) {
+            return 0.0;
+        }
+        else if (satunnaisluku == 1) {
+            return 0.1;
+        }
+        else {
+            return 0.2;
+        }
     }
 };
+
 
 
 std::vector<Hotellihuone> luoHotellihuoneet()
@@ -147,7 +193,7 @@ std::vector<Hotellihuone> luoHotellihuoneet()
         huone.vapaa = true;
         hotellihuoneet.push_back(huone);
     }
-    for (int i{ HUONEMAARA / 2 }; i < HUONEMAARA; i++)
+    for (int i{ HUONEMAARA / 2}; i < HUONEMAARA; i++)
     {
         Hotellihuone huone;
         huone.huonenumero = i + 1;
@@ -213,24 +259,24 @@ int valitseHuone(std::vector<Hotellihuone>& hotellihuoneet, int huonekoko) // Vi
         // Pyydetään asiakasta valitsemaan huonenumero
         if (huonekoko == 1)
         {
-            std::string kysymys{ "Ole hyvä ja valitse huonenumero (1-" + std::to_string(hotellihuoneet.size() / 2 - 1) + ")" };
+            std::string kysymys{ "Ole hyvä ja valitse huonenumero (1-" + std::to_string(hotellihuoneet.size() / 2) + ")" };
             valinta = kysySyote(kysymys, "0123456789", false);
             huonenumero = std::stoi(valinta);
-            if (huonenumero < 1 || huonenumero > hotellihuoneet.size() / 2 - 1)
+            if (huonenumero < 1 || huonenumero > hotellihuoneet.size() / 2)
             {
-                std::cout << "Huonenumeron pitää olla väliltä 1-" << hotellihuoneet.size() / 2 - 1 << "!\n\n";
+                std::cout << "Huonenumeron pitää olla väliltä 1-" << hotellihuoneet.size() / 2 << "!\n\n";
                 continue;
             }
         }
         else
         {
-            std::string kysymys{    "Ole hyvä ja valitse huonenumero (" + std::to_string(hotellihuoneet.size() / 2)
+            std::string kysymys{    "Ole hyvä ja valitse huonenumero (" + std::to_string(hotellihuoneet.size() / 2 + 1)
                                     + "-" + std::to_string(hotellihuoneet.size()) + ")" };
             valinta = kysySyote(kysymys, "0123456789", false);
             huonenumero = std::stoi(valinta);
-            if (huonenumero < hotellihuoneet.size() / 2 || huonenumero > hotellihuoneet.size())
+            if (huonenumero < hotellihuoneet.size() / 2 + 1 || huonenumero > hotellihuoneet.size())
             {
-                std::cout << "Huonenumeron pitää olla väliltä " << hotellihuoneet.size() / 2 << "-" << hotellihuoneet.size() << "!\n\n";
+                std::cout << "Huonenumeron pitää olla väliltä " << hotellihuoneet.size() / 2 + 1 << "-" << hotellihuoneet.size() << "!\n\n";
                 continue;
             }
         }
@@ -271,7 +317,20 @@ int arvoHuone(std::vector<Hotellihuone>& huoneluettelo, int huonekoko)
     // Luo satunnaislukugeneraattori
     std::random_device rd;
     std::mt19937 generator(rd());
-    std::uniform_int_distribution<int> distribution(0, huoneluettelo.size() - 1);
+
+    // Määritä satunnaislukujen jakauma puoliskoille
+    std::uniform_int_distribution<int> distribution;
+    if (huonekoko == 1) {
+        distribution = std::uniform_int_distribution<int>(0, huoneluettelo.size() / 2 - 1);
+    }
+    else if (huonekoko == 2) {
+        distribution = std::uniform_int_distribution<int>(huoneluettelo.size() / 2, huoneluettelo.size() - 1);
+    }
+    else {
+        // Huonekoko ei ole 1 tai 2, palauta virheellinen arvo
+        std::cerr << "Virheellinen huonekoko\n";
+        return -1;
+    }
 
     // Arvo satunnainen huoneen indeksi
     int indeksi = distribution(generator);
@@ -333,12 +392,6 @@ void loppukaneetti()
 
 int main()
 {
-    /*
-    TODO:
-
-
-    */
-
     // Rakennetaan hotelli, ja tehdään sinne tarvittava määrä huoneita.
     std::vector<Hotellihuone> hotelli{ luoHotellihuoneet()};
 
