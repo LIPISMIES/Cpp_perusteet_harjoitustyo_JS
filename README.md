@@ -2,4 +2,4 @@
 
 Kansiosta cpp_perusteet_harjoitustyo löytyy harjoitustyön ainoa lähdekooditiedosto: cpp_perusteet_harjoitustyo.cpp
 
-Harjoitustyön raportti on pdf-muotoisena.
+Harjoitustyön raportti on pdf-muotoisena nimellä: Cpp_perusteet_harjoitustyon_raportti.pdf
